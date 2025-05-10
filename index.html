@@ -26,6 +26,8 @@
       color: var(--light);
       min-height: 100vh;
       line-height: 1.6;
+      overflow-x: hidden;
+      position: relative;
     }
     
     .container {
@@ -34,6 +36,54 @@
       margin: 0 auto;
       padding: 2rem;
       position: relative;
+      z-index: 10;
+    }
+    
+    /* Background effects */
+    .lightning, .firework {
+      position: fixed;
+      pointer-events: none;
+      z-index: 1;
+    }
+    
+    .lightning {
+      background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(120,170,255,0.6), transparent);
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      opacity: 0;
+    }
+    
+    .firework {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      position: fixed;
+      transform: scale(0);
+    }
+    
+    .firework::before, .firework::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      box-shadow: 0 0 20px 10px currentColor;
+      animation: firework-pulse 1s ease-out forwards;
+    }
+    
+    @keyframes firework-pulse {
+      0% {
+        transform: scale(0.1);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(4);
+        opacity: 0;
+      }
     }
     
     .glow {
@@ -191,6 +241,12 @@
       font-size: 1.1rem;
       display: block;
       text-align: center;
+    }
+    
+    /* Special class for long domain names */
+    .domain-card a.long-domain {
+      font-size: 0.8rem;
+      word-break: break-word;
     }
     
     .domain-card a:hover {
@@ -423,7 +479,7 @@
         </div>
         <div class="domain-card" data-tld="com">
           <div class="tld-badge">.COM</div>
-          <a href="https://WhatShouldIHaveForLunch.com" target="_blank">WhatShouldIHaveForLunch.com</a>
+          <a href="https://WhatShouldIHaveForLunch.com" target="_blank" class="long-domain">WhatShouldIHaveForLunch.com</a>
         </div>
         <div class="domain-card" data-tld="com">
           <div class="tld-badge">.COM</div>
@@ -507,7 +563,7 @@
         </div>
         <div class="domain-card" data-tld="com">
           <div class="tld-badge">.COM</div>
-          <a href="https://KanyeWestForPresident.com" target="_blank">KanyeWestForPresident.com</a>
+          <a href="https://KanyeWestForPresident.com" target="_blank" class="long-domain">KanyeWestForPresident.com</a>
         </div>
         <div class="domain-card" data-tld="com">
           <div class="tld-badge">.COM</div>
@@ -554,6 +610,9 @@
       <p>© 2025 Sohrab's Domain Collection. All rights reserved.</p>
     </footer>
   </div>
+  
+  <!-- Animation elements -->
+  <div class="lightning"></div>
   
   <script>
     // Tab switching functionality
@@ -638,22 +697,4 @@
       'linear-gradient(90deg, #ef476f, #ffd166)'
     ];
     
-    badges.forEach(badge => {
-      const randomColor = colors[Math.floor(Math.random() * colors.length)];
-      badge.style.background = randomColor;
-    });
-    
-    // Count domains by TLD for display
-    const aiDomains = document.querySelectorAll('.domain-card[data-tld="ai"]').length;
-    const botDomains = document.querySelectorAll('.domain-card[data-tld="bot"]').length;
-    const comDomains = document.querySelectorAll('.domain-card[data-tld="com"]').length;
-    const otherDomains = allDomainCards.length - aiDomains - botDomains - comDomains;
-    
-    // Update section titles with counts
-    document.querySelector('#ai h2').innerText = `AI Domains (${aiDomains})`;
-    document.querySelector('#bot h2').innerText = `BOT Domains (${botDomains})`;
-    document.querySelector('#com h2').innerText = `COM Domains (${comDomains})`;
-    document.querySelector('#other h2').innerText = `Other TLD Domains (${otherDomains})`;
-  </script>
-</body>
-</html>
+    badges
