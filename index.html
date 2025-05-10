@@ -1,638 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sohrab's Domain Collection</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sohrab's Domains</title>
   <style>
-    :root {
-      --primary: #3a86ff;
-      --secondary: #ff006e;
-      --dark: #14213d;
-      --light: #f8f9fa;
-      --accent: #ffd60a;
-    }
-    
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      transition: all 0.3s ease;
-    }
-    
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, var(--dark), #000);
-      color: var(--light);
-      min-height: 100vh;
-      line-height: 1.6;
+      font-family: 'Segoe UI', sans-serif;
+      background: #111;
+      color: #eee;
+      padding: 40px;
+      margin: 0;
+      overflow-x: hidden;
     }
-    
-    .container {
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2rem;
-      position: relative;
-    }
-    
-    .glow {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 60%;
-      height: 60%;
-      background: var(--primary);
-      filter: blur(150px);
-      opacity: 0.15;
-      z-index: -1;
-      border-radius: 50%;
-    }
-    
-    .glow2 {
-      position: absolute;
-      top: 80%;
-      left: 30%;
-      width: 40%;
-      height: 40%;
-      background: var(--secondary);
-      filter: blur(120px);
-      opacity: 0.15;
-      z-index: -1;
-      border-radius: 50%;
-    }
-    
-    header {
-      text-align: center;
-      margin-bottom: 3rem;
-      position: relative;
-    }
-    
     h1 {
-      font-size: 3.5rem;
-      font-weight: 800;
-      margin-bottom: 1rem;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 0 20px rgba(58, 134, 255, 0.2);
+      font-size: 3em;
+      margin-bottom: 10px;
+      color: #00e0ff;
     }
-    
-    .subtitle {
-      font-size: 1.2rem;
-      opacity: 0.7;
-      margin-bottom: 2rem;
+    h2 {
+      margin-top: 40px;
+      font-size: 1.5em;
+      color: #ffcc00;
+      border-bottom: 2px solid #333;
+      padding-bottom: 5px;
     }
-    
-    .domain-counter {
-      display: inline-block;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 0.5rem 1rem;
-      border-radius: 2rem;
-      font-weight: 600;
-      backdrop-filter: blur(5px);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .domain-tabs {
+    ul {
+      list-style: none;
+      padding-left: 0;
       display: flex;
-      justify-content: center;
       flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: 2rem;
+      gap: 10px;
     }
-    
-    .tab-btn {
-      background: rgba(255, 255, 255, 0.1);
-      border: none;
-      padding: 0.7rem 1.5rem;
-      border-radius: 2rem;
-      color: var(--light);
-      font-weight: 600;
-      cursor: pointer;
-      backdrop-filter: blur(5px);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+    li {
+      background: #222;
+      padding: 10px 14px;
+      border-radius: 8px;
+      transition: background 0.2s ease;
+      max-width: 100%;
+      word-wrap: break-word;
     }
-    
-    .tab-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-      transform: translateY(-3px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    li:hover {
+      background: #333;
     }
-    
-    .tab-btn.active {
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      color: white;
-      box-shadow: 0 6px 15px rgba(58, 134, 255, 0.3);
-    }
-    
-    .domain-section {
-      display: none;
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    
-    .domain-section.active {
-      display: block;
-      opacity: 1;
-      transform: translateY(0);
-    }
-    
-    .domain-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 1.5rem;
-      margin-top: 2rem;
-    }
-    
-    .domain-card {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      position: relative;
-      overflow: hidden;
-      backdrop-filter: blur(5px);
-    }
-    
-    .domain-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .domain-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      opacity: 0;
-      z-index: -1;
-      transition: opacity 0.5s ease;
-    }
-    
-    .domain-card:hover::before {
-      opacity: 0.05;
-    }
-    
-    .domain-card a {
-      color: var(--light);
+    a {
       text-decoration: none;
-      font-weight: 600;
-      font-size: 1.1rem;
-      display: block;
-      text-align: center;
-      word-break: break-word;
-    }
-    
-    /* Handle long domain names */
-    .domain-card a.long-domain {
-      font-size: 0.85rem;
-    }
-    
-    .domain-card a:hover {
-      color: var(--accent);
-    }
-    
-    .tld-badge {
-      position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      color: white;
-      padding: 0.2rem 0.5rem;
-      border-radius: 0.5rem;
-      font-size: 0.7rem;
+      color: #00e0ff;
       font-weight: bold;
-      letter-spacing: 0.5px;
+      font-size: 0.9em;
     }
-    
-    footer {
-      text-align: center;
-      margin-top: 3rem;
-      padding: 2rem 0;
-      opacity: 0.7;
-      font-size: 0.9rem;
+    a.long-domain {
+      font-size: 0.75em;
     }
-    
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 2.5rem;
-      }
-      
-      .domain-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      }
+    a:hover {
+      text-decoration: underline;
     }
-    
-    @media (max-width: 480px) {
-      .container {
-        padding: 1rem;
-      }
-      
-      h1 {
-        font-size: 2rem;
-      }
-      
-      .domain-grid {
-        grid-template-columns: 1fr;
-      }
+
+    /* Fireworks animation background */
+    @keyframes flicker {
+      0% { opacity: 0; transform: translateY(-50%) scale(0.5); }
+      50% { opacity: 1; transform: translateY(0) scale(1.2); }
+      100% { opacity: 0; transform: translateY(50%) scale(0.8); }
+    }
+    .firework {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      background: white;
+      box-shadow: 0 0 8px 4px rgba(255,255,255,0.7);
+      border-radius: 50%;
+      opacity: 0;
+      animation: flicker 1s linear infinite;
+      z-index: 0;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="glow"></div>
-    <div class="glow2"></div>
-    
-    <header>
-      <h1>Sohrab's Domain Collection</h1>
-      <p class="subtitle">A curated portfolio of premium domain names</p>
-      <div class="domain-counter">62 Unique Domains</div>
-    </header>
-    
-    <div class="domain-tabs">
-      <button class="tab-btn active" data-tld="all">All Domains</button>
-      <button class="tab-btn" data-tld="ai">.AI</button>
-      <button class="tab-btn" data-tld="bot">.BOT</button>
-      <button class="tab-btn" data-tld="com">.COM</button>
-      <button class="tab-btn" data-tld="other">Other TLDs</button>
-    </div>
-    
-    <div class="domain-section active" id="all">
-      <div class="domain-grid">
-        <!-- .AI Domains -->
-        <div class="domain-card" data-tld="ai">
-          <div class="tld-badge">.AI</div>
-          <a href="https://ShutUp.ai" target="_blank">ShutUp.ai</a>
-        </div>
-        <div class="domain-card" data-tld="ai">
-          <div class="tld-badge">.AI</div>
-          <a href="https://Diggy.ai" target="_blank">Diggy.ai</a>
-        </div>
-        <div class="domain-card" data-tld="ai">
-          <div class="tld-badge">.AI</div>
-          <a href="https://Tiff.ai" target="_blank">Tiff.ai</a>
-        </div>
-        <div class="domain-card" data-tld="ai">
-          <div class="tld-badge">.AI</div>
-          <a href="https://Repair.ai" target="_blank">Repair.ai</a>
-        </div>
-        <div class="domain-card" data-tld="ai">
-          <div class="tld-badge">.AI</div>
-          <a href="https://Spidey.ai" target="_blank">Spidey.ai</a>
-        </div>
-        <div class="domain-card" data-tld="ai">
-          <div class="tld-badge">.AI</div>
-          <a href="https://TBH.ai" target="_blank">TBH.ai</a>
-        </div>
-        <div class="domain-card" data-tld="ai">
-          <div class="tld-badge">.AI</div>
-          <a href="https://Pray.ai" target="_blank">Pray.ai</a>
-        </div>
-        <div class="domain-card" data-tld="ai">
-          <div class="tld-badge">.AI</div>
-          <a href="https://Sproto.ai" target="_blank">Sproto.ai</a>
-        </div>
-        <div class="domain-card" data-tld="ai">
-          <div class="tld-badge">.AI</div>
-          <a href="https://Plushy.ai" target="_blank">Plushy.ai</a>
-        </div>
-        <div class="domain-card" data-tld="ai">
-          <div class="tld-badge">.AI</div>
-          <a href="https://PublicDomain.ai" target="_blank">PublicDomain.ai</a>
-        </div>
-        <div class="domain-card" data-tld="ai">
-          <div class="tld-badge">.AI</div>
-          <a href="https://0123.ai" target="_blank">0123.ai</a>
-        </div>
-        <div class="domain-card" data-tld="ai">
-          <div class="tld-badge">.AI</div>
-          <a href="https://696.ai" target="_blank">696.ai</a>
-        </div>
-        <div class="domain-card" data-tld="ai">
-          <div class="tld-badge">.AI</div>
-          <a href="https://4444.ai" target="_blank">4444.ai</a>
-        </div>
-        <div class="domain-card" data-tld="ai">
-          <div class="tld-badge">.AI</div>
-          <a href="https://Rhett.ai" target="_blank">Rhett.ai</a>
-        </div>
-        <div class="domain-card" data-tld="ai">
-          <div class="tld-badge">.AI</div>
-          <a href="https://Pickups.AI" target="_blank">Pickups.AI</a>
-        </div>
-        <div class="domain-card" data-tld="ai">
-          <div class="tld-badge">.AI</div>
-          <a href="https://Bombs.ai" target="_blank">Bombs.ai</a>
-        </div>
-        <div class="domain-card" data-tld="ai">
-          <div class="tld-badge">.AI</div>
-          <a href="https://44.AI" target="_blank">44.AI</a>
-        </div>
-        
-        <!-- .BOT Domains -->
-        <div class="domain-card" data-tld="bot">
-          <div class="tld-badge">.BOT</div>
-          <a href="https://Word.bot" target="_blank">Word.bot</a>
-        </div>
-        <div class="domain-card" data-tld="bot">
-          <div class="tld-badge">.BOT</div>
-          <a href="https://321.bot" target="_blank">321.bot</a>
-        </div>
-        <div class="domain-card" data-tld="bot">
-          <div class="tld-badge">.BOT</div>
-          <a href="https://Cater.bot" target="_blank">Cater.bot</a>
-        </div>
-        <div class="domain-card" data-tld="bot">
-          <div class="tld-badge">.BOT</div>
-          <a href="https://Diag.bot" target="_blank">Diag.bot</a>
-        </div>
-        <div class="domain-card" data-tld="bot">
-          <div class="tld-badge">.BOT</div>
-          <a href="https://Suck.bot" target="_blank">Suck.bot</a>
-        </div>
-        <div class="domain-card" data-tld="bot">
-          <div class="tld-badge">.BOT</div>
-          <a href="https://AuPair.bot" target="_blank">AuPair.bot</a>
-        </div>
-        <div class="domain-card" data-tld="bot">
-          <div class="tld-badge">.BOT</div>
-          <a href="https://Procedure.bot" target="_blank">Procedure.bot</a>
-        </div>
-        <div class="domain-card" data-tld="bot">
-          <div class="tld-badge">.BOT</div>
-          <a href="https://House.bot" target="_blank">House.bot</a>
-        </div>
-        <div class="domain-card" data-tld="bot">
-          <div class="tld-badge">.BOT</div>
-          <a href="https://fun.bot" target="_blank">fun.bot</a>
-        </div>
-        <div class="domain-card" data-tld="bot">
-          <div class="tld-badge">.BOT</div>
-          <a href="https://friend.bot" target="_blank">friend.bot</a>
-        </div>
-        <div class="domain-card" data-tld="bot">
-          <div class="tld-badge">.BOT</div>
-          <a href="https://pussy.bot" target="_blank">pussy.bot</a>
-        </div>
-        <div class="domain-card" data-tld="bot">
-          <div class="tld-badge">.BOT</div>
-          <a href="https://World.bot" target="_blank">World.bot</a>
-        </div>
-        <div class="domain-card" data-tld="bot">
-          <div class="tld-badge">.BOT</div>
-          <a href="https://Veri.bot" target="_blank">Veri.bot</a>
-        </div>
-        <div class="domain-card" data-tld="bot">
-          <div class="tld-badge">.BOT</div>
-          <a href="https://Clean.Bot" target="_blank">Clean.Bot</a>
-        </div>
-        <div class="domain-card" data-tld="bot">
-          <div class="tld-badge">.BOT</div>
-          <a href="https://Blue.Bot" target="_blank">Blue.Bot</a>
-        </div>
-        <div class="domain-card" data-tld="bot">
-          <div class="tld-badge">.BOT</div>
-          <a href="https://fix.bot" target="_blank">fix.bot</a>
-        </div>
-        <div class="domain-card" data-tld="bot">
-          <div class="tld-badge">.BOT</div>
-          <a href="https://install.bot" target="_blank">install.bot</a>
-        </div>
-        
-        <!-- .COM Domains -->
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://DineTour.com" target="_blank">DineTour.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://Waby.com" target="_blank">Waby.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://Rakisa.com" target="_blank">Rakisa.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://URYA.com" target="_blank">URYA.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://WhatShouldIHaveForLunch.com" target="_blank" class="long-domain">WhatShouldIHaveForLunch.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://Uncomb.com" target="_blank">Uncomb.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://PugBay.com" target="_blank">PugBay.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://NooTell.com" target="_blank">NooTell.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://JupBot.com" target="_blank">JupBot.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://Joviah.com" target="_blank">Joviah.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://Gitky.com" target="_blank">Gitky.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://Geemly.com" target="_blank">Geemly.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://FluffyFlow.com" target="_blank">FluffyFlow.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://Fankyo.com" target="_blank">Fankyo.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://DavidGeffen.com" target="_blank">DavidGeffen.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://CliffSpace.com" target="_blank">CliffSpace.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://Ceivu.com" target="_blank">Ceivu.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://CDBN.com" target="_blank">CDBN.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://Caznat.com" target="_blank">Caznat.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://Aloraz.com" target="_blank">Aloraz.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://Absubo.com" target="_blank">Absubo.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://10secs.com" target="_blank">10secs.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://QuandaryGPT.com" target="_blank">QuandaryGPT.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://myAGIagent.com" target="_blank">myAGIagent.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://AgentDS.com" target="_blank">AgentDS.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://KanyeWestForPresident.com" target="_blank" class="long-domain">KanyeWestForPresident.com</a>
-        </div>
-        <div class="domain-card" data-tld="com">
-          <div class="tld-badge">.COM</div>
-          <a href="https://ColdCakes.com" target="_blank">ColdCakes.com</a>
-        </div>
-        
-        <!-- Other TLDs -->
-        <div class="domain-card" data-tld="in">
-          <div class="tld-badge">.IN</div>
-          <a href="https://AGIagent.in" target="_blank">AGIagent.in</a>
-        </div>
-      </div>
-    </div>
-    
-    <div class="domain-section" id="ai">
-      <h2>AI Domains</h2>
-      <div class="domain-grid">
-        <!-- AI domains will be populated by JavaScript -->
-      </div>
-    </div>
-    
-    <div class="domain-section" id="bot">
-      <h2>BOT Domains</h2>
-      <div class="domain-grid">
-        <!-- BOT domains will be populated by JavaScript -->
-      </div>
-    </div>
-    
-    <div class="domain-section" id="com">
-      <h2>COM Domains</h2>
-      <div class="domain-grid">
-        <!-- COM domains will be populated by JavaScript -->
-      </div>
-    </div>
-    
-    <div class="domain-section" id="other">
-      <h2>Other TLD Domains</h2>
-      <div class="domain-grid">
-        <!-- Other TLD domains will be populated by JavaScript -->
-      </div>
-    </div>
-    
-    <footer>
-      <p>© 2025 Sohrab's Domain Collection. All rights reserved.</p>
-    </footer>
-  </div>
-  
+  <h1>Sohrab's Domains</h1>
+
+  <h2>.ai</h2>
+  <ul>
+    <li><a href="https://44.ai">44.ai</a></li>
+    <li><a href="https://ShutUp.ai">ShutUp.ai</a></li>
+    <li><a href="https://Diggy.ai">Diggy.ai</a></li>
+    <li><a href="https://Tiff.ai">Tiff.ai</a></li>
+    <li><a href="https://Repair.ai">Repair.ai</a></li>
+    <li><a href="https://Spidey.ai">Spidey.ai</a></li>
+    <li><a href="https://TBH.ai">TBH.ai</a></li>
+    <li><a href="https://Pray.ai">Pray.ai</a></li>
+    <li><a href="https://Sproto.ai">Sproto.ai</a></li>
+    <li><a href="https://Plushy.ai">Plushy.ai</a></li>
+    <li><a href="https://PublicDomain.ai">PublicDomain.ai</a></li>
+    <li><a href="https://0123.ai">0123.ai</a></li>
+    <li><a href="https://696.ai">696.ai</a></li>
+    <li><a href="https://4444.ai">4444.ai</a></li>
+    <li><a href="https://Rhett.ai">Rhett.ai</a></li>
+    <li><a href="https://Pickups.ai">Pickups.ai</a></li>
+    <li><a href="https://Bombs.ai">Bombs.ai</a></li>
+  </ul>
+
+  <h2>.bot</h2>
+  <ul>
+    <li><a href="https://Word.bot">Word.bot</a></li>
+    <li><a href="https://321.bot">321.bot</a></li>
+    <li><a href="https://Cater.bot">Cater.bot</a></li>
+    <li><a href="https://Diag.bot">Diag.bot</a></li>
+    <li><a href="https://Suck.bot">Suck.bot</a></li>
+    <li><a href="https://AuPair.bot">AuPair.bot</a></li>
+    <li><a href="https://Procedure.bot">Procedure.bot</a></li>
+    <li><a href="https://House.bot">House.bot</a></li>
+    <li><a href="https://fun.bot">fun.bot</a></li>
+    <li><a href="https://friend.bot">friend.bot</a></li>
+    <li><a href="https://pussy.bot">pussy.bot</a></li>
+    <li><a href="https://World.bot">World.bot</a></li>
+    <li><a href="https://Veri.bot">Veri.bot</a></li>
+    <li><a href="https://Clean.Bot">Clean.Bot</a></li>
+    <li><a href="https://Blue.Bot">Blue.Bot</a></li>
+    <li><a href="https://fix.bot">fix.bot</a></li>
+    <li><a href="https://install.bot">install.bot</a></li>
+  </ul>
+
+  <h2>.com</h2>
+  <ul>
+    <li><a href="https://DineTour.com">DineTour.com</a></li>
+    <li><a href="https://Waby.com">Waby.com</a></li>
+    <li><a href="https://Rakisa.com">Rakisa.com</a></li>
+    <li><a href="https://URYA.com">URYA.com</a></li>
+    <li><a class="long-domain" href="https://WhatShouldIHaveForLunch.com">WhatShouldIHaveForLunch.com</a></li>
+    <li><a href="https://Uncomb.com">Uncomb.com</a></li>
+    <li><a href="https://PugBay.com">PugBay.com</a></li>
+    <li><a href="https://NooTell.com">NooTell.com</a></li>
+    <li><a href="https://JupBot.com">JupBot.com</a></li>
+    <li><a href="https://Joviah.com">Joviah.com</a></li>
+    <li><a href="https://Gitky.com">Gitky.com</a></li>
+    <li><a href="https://Geemly.com">Geemly.com</a></li>
+    <li><a href="https://FluffyFlow.com">FluffyFlow.com</a></li>
+    <li><a href="https://Fankyo.com">Fankyo.com</a></li>
+    <li><a href="https://DavidGeffen.com">DavidGeffen.com</a></li>
+    <li><a href="https://CliffSpace.com">CliffSpace.com</a></li>
+    <li><a href="https://Ceivu.com">Ceivu.com</a></li>
+    <li><a href="https://CDBN.com">CDBN.com</a></li>
+    <li><a href="https://Caznat.com">Caznat.com</a></li>
+    <li><a href="https://Aloraz.com">Aloraz.com</a></li>
+    <li><a href="https://Absubo.com">Absubo.com</a></li>
+    <li><a href="https://10secs.com">10secs.com</a></li>
+    <li><a href="https://QuandaryGPT.com">QuandaryGPT.com</a></li>
+    <li><a href="https://myAGIagent.com">myAGIagent.com</a></li>
+    <li><a href="https://AgentDS.com">AgentDS.com</a></li>
+    <li><a href="https://KanyeWestForPresident.com">KanyeWestForPresident.com</a></li>
+    <li><a href="https://ColdCakes.com">ColdCakes.com</a></li>
+  </ul>
+
+  <h2>.in</h2>
+  <ul>
+    <li><a href="https://AGIagent.in">AGIagent.in</a></li>
+  </ul>
+
   <script>
-    // Tab switching functionality
-    const tabBtns = document.querySelectorAll('.tab-btn');
-    const sections = document.querySelectorAll('.domain-section');
-    const allDomainCards = document.querySelectorAll('.domain-card');
-    
-    // Initialize tabs
-    tabBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        // Remove active class from all buttons
-        tabBtns.forEach(b => b.classList.remove('active'));
-        // Add active class to clicked button
-        btn.classList.add('active');
-        
-        const tld = btn.getAttribute('data-tld');
-        
-        // Hide all sections
-        sections.forEach(section => {
-          section.classList.remove('active');
-        });
-        
-        if (tld === 'all') {
-          // Show all domains section
-          document.getElementById('all').classList.add('active');
-        } else if (tld === 'other') {
-          // Show other TLDs section
-          document.getElementById('other').classList.add('active');
-          
-          // Clone and filter domains for this section
-          const otherSection = document.getElementById('other').querySelector('.domain-grid');
-          otherSection.innerHTML = '';
-          
-          allDomainCards.forEach(card => {
-            const cardTld = card.getAttribute('data-tld');
-            if (cardTld !== 'ai' && cardTld !== 'bot' && cardTld !== 'com') {
-              const clone = card.cloneNode(true);
-              otherSection.appendChild(clone);
-            }
-          });
-        } else {
-          // Show specific TLD section
-          document.getElementById(tld).classList.add('active');
-          
-          // Clone and filter domains for this section
-          const tldSection = document.getElementById(tld).querySelector('.domain-grid');
-          tldSection.innerHTML = '';
-          
-          allDomainCards.forEach(card => {
-            if (card.getAttribute('data-tld') === tld) {
-              const clone = card.cloneNode(true);
-              tldSection.appendChild(clone);
-            }
-          });
-        }
-      });
-    });
-    
-    // Add hover effect that follows mouse on cards
-    const cards = document.querySelectorAll('.domain-card');
-    cards.forEach(card => {
-      card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        card.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.1), rgba(255,255,255,0.05) 40%)`;
-      });
-      
-      card.addEventListener('mouseleave', () => {
-        card.style.background = 'rgba(255,255,255,0.05)';
-      });
-    });
-    
-    // Random color generator for TLD badges
-    const badges = document.queryS
+    function createFirework() {
+      const fw = document.createElement('div');
+      fw.className = 'firework';
+      fw.style.top = Math.random() * 100 + 'vh';
+      fw.style.left = Math.random() * 100 + 'vw';
+      fw.style.animationDuration = (Math.random() + 0.5) + 's';
+      document.body.appendChild(fw);
+      setTimeout(() => fw.remove(), 1200);
+    }
+    setInterval(createFirework, 800);
+  </script>
+</body>
+</html>
