@@ -191,12 +191,6 @@
       font-size: 1.1rem;
       display: block;
       text-align: center;
-      word-break: break-word;
-    }
-    
-    /* Handle long domain names */
-    .domain-card a.long-domain {
-      font-size: 0.85rem;
     }
     
     .domain-card a:hover {
@@ -429,7 +423,7 @@
         </div>
         <div class="domain-card" data-tld="com">
           <div class="tld-badge">.COM</div>
-          <a href="https://WhatShouldIHaveForLunch.com" target="_blank" class="long-domain">WhatShouldIHaveForLunch.com</a>
+          <a href="https://WhatShouldIHaveForLunch.com" target="_blank">WhatShouldIHaveForLunch.com</a>
         </div>
         <div class="domain-card" data-tld="com">
           <div class="tld-badge">.COM</div>
@@ -513,7 +507,7 @@
         </div>
         <div class="domain-card" data-tld="com">
           <div class="tld-badge">.COM</div>
-          <a href="https://KanyeWestForPresident.com" target="_blank" class="long-domain">KanyeWestForPresident.com</a>
+          <a href="https://KanyeWestForPresident.com" target="_blank">KanyeWestForPresident.com</a>
         </div>
         <div class="domain-card" data-tld="com">
           <div class="tld-badge">.COM</div>
@@ -635,4 +629,31 @@
     });
     
     // Random color generator for TLD badges
-    const badges = document.queryS
+    const badges = document.querySelectorAll('.tld-badge');
+    const colors = [
+      'linear-gradient(90deg, #3a86ff, #0096c7)',
+      'linear-gradient(90deg, #ff006e, #ff5400)',
+      'linear-gradient(90deg, #8338ec, #3a86ff)',
+      'linear-gradient(90deg, #06d6a0, #1b9aaa)',
+      'linear-gradient(90deg, #ef476f, #ffd166)'
+    ];
+    
+    badges.forEach(badge => {
+      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+      badge.style.background = randomColor;
+    });
+    
+    // Count domains by TLD for display
+    const aiDomains = document.querySelectorAll('.domain-card[data-tld="ai"]').length;
+    const botDomains = document.querySelectorAll('.domain-card[data-tld="bot"]').length;
+    const comDomains = document.querySelectorAll('.domain-card[data-tld="com"]').length;
+    const otherDomains = allDomainCards.length - aiDomains - botDomains - comDomains;
+    
+    // Update section titles with counts
+    document.querySelector('#ai h2').innerText = `AI Domains (${aiDomains})`;
+    document.querySelector('#bot h2').innerText = `BOT Domains (${botDomains})`;
+    document.querySelector('#com h2').innerText = `COM Domains (${comDomains})`;
+    document.querySelector('#other h2').innerText = `Other TLD Domains (${otherDomains})`;
+  </script>
+</body>
+</html>
