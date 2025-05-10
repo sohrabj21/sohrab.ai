@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sohrab's Domain Collection</title>
   <style>
     :root {
@@ -12,66 +12,92 @@
       --light: #f8f9fa;
       --accent: #ffd60a;
     }
-
+    
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       transition: all 0.3s ease;
     }
-
+    
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, var(--dark), #000);
       color: var(--light);
       min-height: 100vh;
       line-height: 1.6;
+      overflow-x: hidden;
     }
-
-    body::before {
-      content: '';
+    
+    #fireworks-canvas {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: url('https://media.giphy.com/media/l0MYC0LajbaPoEADu/giphy.gif') center center / cover no-repeat;
-      opacity: 0.2;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       z-index: -2;
-      animation: flash 5s infinite ease-in-out;
+      opacity: 0.5;
+      pointer-events: none;
     }
-
-    @keyframes flash {
-      0%, 100% { opacity: 0.15; }
-      50% { opacity: 0.35; }
-    }
-
+    
     .container {
+      width: 100%;
       max-width: 1200px;
       margin: 0 auto;
       padding: 2rem;
       position: relative;
     }
-
+    
+    .glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60%;
+      height: 60%;
+      background: var(--primary);
+      filter: blur(150px);
+      opacity: 0.15;
+      z-index: -1;
+      border-radius: 50%;
+    }
+    
+    .glow2 {
+      position: absolute;
+      top: 80%;
+      left: 30%;
+      width: 40%;
+      height: 40%;
+      background: var(--secondary);
+      filter: blur(120px);
+      opacity: 0.15;
+      z-index: -1;
+      border-radius: 50%;
+    }
+    
     header {
       text-align: center;
       margin-bottom: 3rem;
+      position: relative;
     }
-
+    
     h1 {
       font-size: 3.5rem;
       font-weight: 800;
+      margin-bottom: 1rem;
       background: linear-gradient(90deg, var(--primary), var(--secondary));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
       text-shadow: 0 0 20px rgba(58, 134, 255, 0.2);
     }
-
+    
     .subtitle {
       font-size: 1.2rem;
       opacity: 0.7;
       margin-bottom: 2rem;
     }
-
+    
     .domain-counter {
       display: inline-block;
       background: rgba(255, 255, 255, 0.1);
@@ -82,14 +108,59 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
-
+    
+    .domain-tabs {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: 2rem;
+      color: var(--light);
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .tab-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .tab-btn.active {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: white;
+      box-shadow: 0 6px 15px rgba(58, 134, 255, 0.3);
+    }
+    
+    .domain-section {
+      display: none;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    
+    .domain-section.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
     .domain-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       gap: 1.5rem;
       margin-top: 2rem;
     }
-
+    
     .domain-card {
       background: rgba(255, 255, 255, 0.05);
       border-radius: 12px;
@@ -100,14 +171,31 @@
       overflow: hidden;
       backdrop-filter: blur(5px);
     }
-
+    
     .domain-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
-
+    
+    .domain-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      opacity: 0;
+      z-index: -1;
+      transition: opacity 0.5s ease;
+    }
+    
+    .domain-card:hover::before {
+      opacity: 0.05;
+    }
+    
     .domain-card a {
       color: var(--light);
       text-decoration: none;
@@ -117,15 +205,16 @@
       text-align: center;
       word-break: break-word;
     }
-
+    
     .domain-card a.long-domain {
-      font-size: 0.75rem !important;
+      font-size: 0.75rem;
+      word-wrap: break-word;
     }
-
+    
     .domain-card a:hover {
       color: var(--accent);
     }
-
+    
     .tld-badge {
       position: absolute;
       top: 0.5rem;
@@ -138,34 +227,19 @@
       font-weight: bold;
       letter-spacing: 0.5px;
     }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <header>
-      <h1>Sohrab's Domain Collection</h1>
-      <p class="subtitle">A curated portfolio of premium domain names</p>
-      <div class="domain-counter">62 Unique Domains</div>
-    </header>
-
-    <div class="domain-grid">
-      <div class="domain-card" data-tld="com">
-        <div class="tld-badge">.COM</div>
-        <a href="https://WhatShouldIHaveForLunch.com" target="_blank" class="long-domain">WhatShouldIHaveForLunch.com</a>
-      </div>
-
-      <div class="domain-card" data-tld="com">
-        <div class="tld-badge">.COM</div>
-        <a href="https://KanyeWestForPresident.com" target="_blank" class="long-domain">KanyeWestForPresident.com</a>
-      </div>
-
-      <div class="domain-card" data-tld="com">
-        <div class="tld-badge">.COM</div>
-        <a href="https://DineTour.com" target="_blank">DineTour.com</a>
-      </div>
-
-      <!-- Add more domain-card blocks here -->
-    </div>
-  </div>
-</body>
-</html>
+    
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding: 2rem 0;
+      opacity: 0.7;
+      font-size: 0.9rem;
+    }
+    
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2.5rem;
+      }
+      
+      .domain-grid {
+        grid-template-columns: repeat
