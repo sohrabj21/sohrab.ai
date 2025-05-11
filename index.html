@@ -133,6 +133,8 @@
             justify-content: center;
             min-height: 70px;
             height: 70px;
+            text-decoration: none;
+            color: white;
         }
         
         /* Color-coding for different TLDs */
@@ -173,7 +175,7 @@
             animation: pulse 2s infinite;
         }
         
-        .domain-full {
+        .domain-text {
             font-family: 'Roboto', sans-serif;
             font-size: 1.1rem;
             font-weight: 700;
@@ -182,14 +184,6 @@
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 90%;
-            text-decoration: none;
-            display: block;
-        }
-        
-        .domain-full:hover {
-            color: #4cc9f0;
-            text-decoration: underline;
-            transition: color 0.2s ease;
         }
         
         .tld-badge {
@@ -449,25 +443,25 @@
             }
             
             filteredDomains.forEach(domain => {
-                const domainCard = document.createElement('div');
-                domainCard.className = `domain-card ${domain.category}`;
-                
-                // Create domain URL
+                // Create full domain and URL
                 const fullDomain = `${domain.name}.${domain.tld}`;
                 const domainUrl = `https://${fullDomain}`;
                 
+                // Create the domain card as a direct link
+                const domainCard = document.createElement('a');
+                domainCard.href = domainUrl;
+                domainCard.target = "_blank";
+                domainCard.className = `domain-card ${domain.category}`;
                 domainCard.innerHTML = `
                     <div class="tld-badge badge-${domain.category}">.${domain.tld.toUpperCase()}</div>
-                    <a href="${domainUrl}" class="domain-full" target="_blank">${fullDomain}</a>
+                    <div class="domain-text">${fullDomain}</div>
                 `;
                 
-                // Add click event to trigger lightning and fireworks
+                // Add click event for visual effects (will still navigate due to being a link)
                 domainCard.addEventListener('click', function(e) {
-                    // Only trigger effects if the card itself was clicked (not the link)
-                    if (e.target.classList.contains('domain-card')) {
-                        triggerLightning();
-                        createFirework(Math.random() * window.innerWidth, Math.random() * window.innerHeight);
-                    }
+                    triggerLightning();
+                    createFirework(Math.random() * window.innerWidth, Math.random() * window.innerHeight);
+                    // Don't prevent default - let navigation happen
                 });
                 
                 domainsGrid.appendChild(domainCard);
