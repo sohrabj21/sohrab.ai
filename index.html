@@ -182,6 +182,14 @@
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 90%;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .domain-full:hover {
+            color: #4cc9f0;
+            text-decoration: underline;
+            transition: color 0.2s ease;
         }
         
         .tld-badge {
@@ -443,15 +451,23 @@
             filteredDomains.forEach(domain => {
                 const domainCard = document.createElement('div');
                 domainCard.className = `domain-card ${domain.category}`;
+                
+                // Create domain URL
+                const fullDomain = `${domain.name}.${domain.tld}`;
+                const domainUrl = `https://${fullDomain}`;
+                
                 domainCard.innerHTML = `
                     <div class="tld-badge badge-${domain.category}">.${domain.tld.toUpperCase()}</div>
-                    <div class="domain-full">${domain.name}.${domain.tld}</div>
+                    <a href="${domainUrl}" class="domain-full" target="_blank">${fullDomain}</a>
                 `;
                 
                 // Add click event to trigger lightning and fireworks
-                domainCard.addEventListener('click', function() {
-                    triggerLightning();
-                    createFirework(Math.random() * window.innerWidth, Math.random() * window.innerHeight);
+                domainCard.addEventListener('click', function(e) {
+                    // Only trigger effects if the card itself was clicked (not the link)
+                    if (e.target.classList.contains('domain-card')) {
+                        triggerLightning();
+                        createFirework(Math.random() * window.innerWidth, Math.random() * window.innerHeight);
+                    }
                 });
                 
                 domainsGrid.appendChild(domainCard);
